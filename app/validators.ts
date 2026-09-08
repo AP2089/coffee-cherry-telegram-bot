@@ -3,7 +3,8 @@ export function validateName(v: string): string | null {
 }
 
 export function validateEmail(v: string): string | null {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : 'Введите корректный email';
+  const email = v.trim();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? null : 'Введите корректный email';
 }
 
 export function formatPhone(v: string): string | null {
