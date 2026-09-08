@@ -69,7 +69,13 @@ bot.on('message:text', async (ctx) => {
 
   if (!step || ctx.message.text.startsWith('/')) return;
 
-  if (step.startsWith('order:')) await handleOrderText(ctx, ctx.message.text.trim());
-  else if (step.startsWith('contact:')) await handleContactText(ctx, ctx.message.text.trim());
-  else if (step === 'ai:chat') await handleAiText(ctx, ctx.message.text.trim());
+  try {
+    if (step.startsWith('order:')) await handleOrderText(ctx, ctx.message.text.trim());
+    else if (step.startsWith('contact:')) await handleContactText(ctx, ctx.message.text.trim());
+    else if (step === 'ai:chat') await handleAiText(ctx, ctx.message.text.trim());
+  } catch (err) {
+    console.error('Text handler error:', err);
+    ctx.session.step = null;
+    await ctx.reply('Произошла ошибка. Начните снова из меню.', { reply_markup: mainKb() });
+  }
 });

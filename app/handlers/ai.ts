@@ -35,11 +35,16 @@ export async function handleAiText(ctx: Ctx, text: string) {
     }
   } catch (err) {
     console.error('AI error:', err);
-    await ctx.api.editMessageText(
-      ctx.chat!.id,
-      thinking.message_id,
-      'Ошибка AI. Попробуйте позже.',
-      { reply_markup: backKb() },
-    );
+    const msg = err instanceof Error ? err.message : String(err);
+    let detail = 'Ошибка AI. Попробуйте позже.';
+
+    if (msg.includes('API_GEMINI_KEY')) detail = 'Не задан API_GEMINI_KEY.';
+    else if (msg.includes('User location is not supported'))
+      detail =
+        'Gemini недоступен с IP сервера (регион / IPv6). Нужен IPv4 из поддерживаемой страны или прокси.';
+
+    await ctx.api.editMessageText(ctx.chat!.id, thinking.message_id, detail, {
+      reply_markup: backKb(),
+    });
   }
 }
